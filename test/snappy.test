@@ -1,0 +1,65 @@
+package require tcltest
+set auto_path [list ../lib {*}$auto_path]
+package require -exact snappy 1.0.0
+
+tcltest::test snappy-0.0 {snappy} -body {
+    snappy
+} -returnCodes {error} -result {wrong # args: should be "snappy subcommand ?arg ...?"}
+
+tcltest::test snappy-1.0 {snappy compress} -body {
+    snappy compress
+} -returnCodes {error} -result {wrong # args: should be "snappy compress string"}
+
+tcltest::test snappy-1.1 {snappy compress} -body {
+    set c [snappy compress 1]
+    set l {}
+    foreach i [split $c ""] {
+	binary scan $i c v
+	lappend l $v
+    }
+    set l
+} -returnCodes {ok} -result "1 0 49"
+
+tcltest::test snappy-1.2 {snappy compress} -body {
+    set c [snappy compress 11111111111111111111]
+    set l {}
+    foreach i [split $c ""] {
+	binary scan $i c v
+	lappend l $v
+    }
+    set l
+} -returnCodes {ok} -result {20 0 49 74 1 0}
+
+tcltest::test snappy-2.0 {snappy uncompress} -body {
+    snappy uncompress
+} -returnCodes {error} -result {wrong # args: should be "snappy uncompress string"}
+
+tcltest::test snappy-2.1 {snappy uncompress} -body {
+    snappy uncompress [snappy compress 2]
+} -returnCodes {ok} -result {2}
+
+tcltest::test snappy-2.2 {snappy uncompress} -body {
+    snappy uncompress [snappy compress 22222222222222222222]
+} -returnCodes {ok} -result {22222222222222222222}
+
+tcltest::test snappy-2.2 {snappy uncompress} -body {
+    snappy uncompress 22222222222222222222
+} -returnCodes {error} -result {Snappy uncompression failed}
+
+tcltest::test snappy-3.0 {snappy validate compressed buffer} -body {
+    snappy validate_compressed_buffer
+} -returnCodes {error} -result {wrong # args: should be "snappy validate_compressed_buffer string"}
+
+tcltest::test snappy-3.1 {snappy validate compressed buffer} -body {
+    snappy validate_compressed_buffer 1
+} -returnCodes {ok} -result {0}
+
+tcltest::test snappy-3.2 {snappy validate compressed buffer} -body {
+    snappy validate_compressed_buffer [snappy compress 1234567890]
+} -returnCodes {ok} -result {1}
+
+# cleanup
+::tcltest::cleanupTests
+return
+
+
