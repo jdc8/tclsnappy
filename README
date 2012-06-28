@@ -1,4 +1,48 @@
 Intro
 =====
 
-snappy is a wrapper for the Google Snappy compression/decompression library.
+Snappy is a Tcl wrapper for the Google Snappy compression/decompression library.
+
+License
+=======
+
+Check COPYING.BSD for more info about the license used for this wrapper.
+
+Building
+========
+
+Requirements:
+
+- Snappy from the Google code repository at
+
+    http://code.google.com/p/snappy
+
+- Tcl 8.5 or 8.6
+
+- Critcl 3
+
+On linux and windows:
+
+- run "tclsh build.tcl"
+
+Type "tclsh build.tcl --help" for more information.
+
+The package can be linked against Snappy statically or dynamicallly. Default is
+dynamic. Use the -static option to choose static linking.
+
+Usage
+=====
+
+    package require snappy
+
+    snappy compress <data>
+
+        Returns the compressed data
+
+    snappy uncompress <compressedData>
+
+        Returns the uncompressed data
+
+    snappy validate_compressed_buffer <compressedData>
+
+        Returns a bool indication validity of the compressedData
